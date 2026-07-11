@@ -1,16 +1,64 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Sparkles, Send, Zap, BookOpen, Languages, HelpCircle, Layers, FileText } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 import { PageHeader } from "@/components/page-header";
 import mascot from "@/assets/ai-mascot.png";
 
 export const Route = createFileRoute("/_app/ai-tutor")({ component: AiTutor });
 
 const actions = [
-  { i: BookOpen, l: "Explain" }, { i: Zap, l: "Simplify" }, { i: FileText, l: "Summarize" },
-  { i: HelpCircle, l: "Quiz Me" }, { i: Layers, l: "Flashcards" }, { i: Languages, l: "Translate" },
+  { i: BookOpen, l: "Explain", p: "Explain this topic simply: " },
+  { i: Zap, l: "Simplify", p: "Simplify this for me: " },
+  { i: FileText, l: "Summarize", p: "Summarize: " },
+  { i: HelpCircle, l: "Quiz Me", p: "Quiz me on: " },
+  { i: Layers, l: "Flashcards", p: "Make 5 flashcards for: " },
+  { i: Languages, l: "Translate", p: "Translate to French: " },
 ];
 
+type ChatMsg = { role: "user" | "assistant"; content: string };
+
 function AiTutor() {
+  const [messages, setMessages] = useState<ChatMsg[]>([
+    { role: "assistant", content: "Hi Frank! What would you like to learn today? I can explain concepts, generate quizzes, or summarize notes." },
+  ]);
+  const [input, setInput] = useState("");
+  const [loading, setLoading] = useState(false);
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
+  }, [messages, loading]);
+
+  async function send(text: string) {
+    const trimmed = text.trim();
+    if (!trimmed || loading) return;
+    const next: ChatMsg[] = [...messages, { role: "user", content: trimmed }];
+    setMessages([...next, { role: "assistant", content: "" }]);
+    setInput("");
+    setLoading(true);
+    try {
+      const res = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ messages: next }),
+      });
+      if (!res.ok || !res.body) throw new Error(await res.text());
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder();
+      let acc = "";
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        acc += decoder.decode(value, { stream: true });
+        setMessages([...next, { role: "assistant", content: acc }]);
+      }
+    } catch (e) {
+      setMessages([...next, { role: "assistant", content: "Sorry — something went wrong. Please try again." }]);
+    } finally {
+      setLoading(false);
+    }
+  }
+
   return (
     <div className="p-6 lg:p-8">
       <PageHeader title="AI Tutor" subtitle="Your personal learning companion, available 24/7." />
@@ -21,30 +69,40 @@ function AiTutor() {
             <img src={mascot} alt="AI" className="h-14 w-14 object-contain" width={56} height={56} />
             <div>
               <div className="font-bold">Coretex AI</div>
-              <div className="text-xs text-success font-semibold">● Online — powered by GPT-class models</div>
+              <div className="text-xs text-success font-semibold">● Online — powered by Qwen 3 32B</div>
             </div>
           </div>
-          <div className="flex-1 p-6 space-y-4 overflow-y-auto">
-            <Msg role="ai">Hi Frank! What would you like to learn today? I can explain concepts, generate quizzes, or summarize notes.</Msg>
-            <Msg role="me">Can you explain Newton's second law?</Msg>
-            <Msg role="ai">Newton's second law says <b>F = ma</b> — the force acting on an object equals its mass times its acceleration. Push a heavier cart with the same force and it accelerates less. Want a quick quiz on it?</Msg>
+          <div ref={scrollRef} className="flex-1 p-6 space-y-4 overflow-y-auto max-h-[520px]">
+            {messages.map((m, i) => (
+              <Msg key={i} role={m.role === "user" ? "me" : "ai"}>
+                {m.content || (loading && i === messages.length - 1 ? <span className="opacity-60">Thinking…</span> : "")}
+              </Msg>
+            ))}
           </div>
           <div className="border-t border-border p-4">
             <div className="mb-3 flex flex-wrap gap-2">
               {actions.map((a) => {
                 const I = a.i;
                 return (
-                  <button key={a.l} className="inline-flex items-center gap-1.5 rounded-full border border-border bg-secondary/60 px-3 py-1.5 text-xs font-semibold hover:bg-accent transition">
+                  <button key={a.l} onClick={() => setInput(a.p)} className="inline-flex items-center gap-1.5 rounded-full border border-border bg-secondary/60 px-3 py-1.5 text-xs font-semibold hover:bg-accent transition">
                     <I className="h-3.5 w-3.5 text-primary" /> {a.l}
                   </button>
                 );
               })}
             </div>
-            <div className="flex items-center gap-2 rounded-full border border-border bg-secondary/40 pl-4 pr-1 py-1.5">
+            <form onSubmit={(e) => { e.preventDefault(); send(input); }} className="flex items-center gap-2 rounded-full border border-border bg-secondary/40 pl-4 pr-1 py-1.5">
               <Sparkles className="h-4 w-4 text-primary" />
-              <input placeholder="Ask AI anything…" className="flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground" />
-              <button className="grid h-9 w-9 place-items-center rounded-full bg-gradient-primary text-primary-foreground shadow-soft"><Send className="h-4 w-4" /></button>
-            </div>
+              <input
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                disabled={loading}
+                placeholder="Ask AI anything…"
+                className="flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground disabled:opacity-60"
+              />
+              <button type="submit" disabled={loading || !input.trim()} className="grid h-9 w-9 place-items-center rounded-full bg-gradient-primary text-primary-foreground shadow-soft disabled:opacity-50">
+                <Send className="h-4 w-4" />
+              </button>
+            </form>
           </div>
         </div>
 
@@ -53,7 +111,7 @@ function AiTutor() {
             <h3 className="font-bold">Suggested for you</h3>
             <ul className="mt-3 space-y-2 text-sm">
               {["Solve calculus problem", "Summarize Chapter 4", "Practice French vocab", "Generate 10 quiz Qs"].map((s) => (
-                <li key={s} className="rounded-xl bg-white/70 px-3 py-2 hover:bg-white transition cursor-pointer">{s}</li>
+                <li key={s} onClick={() => send(s)} className="rounded-xl bg-white/70 px-3 py-2 hover:bg-white transition cursor-pointer">{s}</li>
               ))}
             </ul>
           </div>
@@ -70,6 +128,6 @@ function AiTutor() {
 }
 
 function Msg({ role, children }: { role: "ai" | "me"; children: React.ReactNode }) {
-  if (role === "me") return <div className="ml-auto max-w-[75%] rounded-2xl rounded-tr-sm bg-gradient-primary px-4 py-2.5 text-sm text-primary-foreground">{children}</div>;
-  return <div className="max-w-[75%] rounded-2xl rounded-tl-sm bg-secondary px-4 py-2.5 text-sm leading-relaxed">{children}</div>;
+  if (role === "me") return <div className="ml-auto max-w-[75%] rounded-2xl rounded-tr-sm bg-gradient-primary px-4 py-2.5 text-sm text-primary-foreground whitespace-pre-wrap">{children}</div>;
+  return <div className="max-w-[75%] rounded-2xl rounded-tl-sm bg-secondary px-4 py-2.5 text-sm leading-relaxed whitespace-pre-wrap">{children}</div>;
 }

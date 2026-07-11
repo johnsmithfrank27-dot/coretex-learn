@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as AppRouteImport } from './routes/_app'
 import { Route as AppIndexRouteImport } from './routes/_app.index'
+import { Route as ApiChatRouteImport } from './routes/api/chat'
 import { Route as AppStudyGroupsRouteImport } from './routes/_app.study-groups'
 import { Route as AppSocialRouteImport } from './routes/_app.social'
 import { Route as AppSettingsRouteImport } from './routes/_app.settings'
@@ -32,6 +33,11 @@ const AppIndexRoute = AppIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => AppRoute,
+} as any)
+const ApiChatRoute = ApiChatRouteImport.update({
+  id: '/api/chat',
+  path: '/api/chat',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const AppStudyGroupsRoute = AppStudyGroupsRouteImport.update({
   id: '/study-groups',
@@ -108,6 +114,7 @@ export interface FileRoutesByFullPath {
   '/settings': typeof AppSettingsRoute
   '/social': typeof AppSocialRoute
   '/study-groups': typeof AppStudyGroupsRoute
+  '/api/chat': typeof ApiChatRoute
 }
 export interface FileRoutesByTo {
   '/ai-tutor': typeof AppAiTutorRoute
@@ -122,6 +129,7 @@ export interface FileRoutesByTo {
   '/settings': typeof AppSettingsRoute
   '/social': typeof AppSocialRoute
   '/study-groups': typeof AppStudyGroupsRoute
+  '/api/chat': typeof ApiChatRoute
   '/': typeof AppIndexRoute
 }
 export interface FileRoutesById {
@@ -139,6 +147,7 @@ export interface FileRoutesById {
   '/_app/settings': typeof AppSettingsRoute
   '/_app/social': typeof AppSocialRoute
   '/_app/study-groups': typeof AppStudyGroupsRoute
+  '/api/chat': typeof ApiChatRoute
   '/_app/': typeof AppIndexRoute
 }
 export interface FileRouteTypes {
@@ -157,6 +166,7 @@ export interface FileRouteTypes {
     | '/settings'
     | '/social'
     | '/study-groups'
+    | '/api/chat'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/ai-tutor'
@@ -171,6 +181,7 @@ export interface FileRouteTypes {
     | '/settings'
     | '/social'
     | '/study-groups'
+    | '/api/chat'
     | '/'
   id:
     | '__root__'
@@ -187,11 +198,13 @@ export interface FileRouteTypes {
     | '/_app/settings'
     | '/_app/social'
     | '/_app/study-groups'
+    | '/api/chat'
     | '/_app/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   AppRoute: typeof AppRouteWithChildren
+  ApiChatRoute: typeof ApiChatRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -209,6 +222,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof AppIndexRouteImport
       parentRoute: typeof AppRoute
+    }
+    '/api/chat': {
+      id: '/api/chat'
+      path: '/api/chat'
+      fullPath: '/api/chat'
+      preLoaderRoute: typeof ApiChatRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/_app/study-groups': {
       id: '/_app/study-groups'
@@ -333,17 +353,8 @@ const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   AppRoute: AppRouteWithChildren,
+  ApiChatRoute: ApiChatRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
