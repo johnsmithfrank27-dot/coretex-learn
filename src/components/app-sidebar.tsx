@@ -19,19 +19,19 @@ import { CoretexLogo } from "./coretex-logo";
 import avatarFrank from "@/assets/avatar-frank.jpg";
 
 const nav = [
-  { title: "Home", url: "/", icon: Home },
-  { title: "AI Tutor", url: "/ai-tutor", icon: Sparkles },
-  { title: "Learn", url: "/learn", icon: BookOpen },
-  { title: "Social", url: "/social", icon: Users },
-  { title: "Study Groups", url: "/study-groups", icon: UsersRound },
-  { title: "Notes", url: "/notes", icon: StickyNote },
-  { title: "Flashcards", url: "/flashcards", icon: Layers },
-  { title: "Quizzes", url: "/quizzes", icon: HelpCircle },
-  { title: "Progress", url: "/progress", icon: TrendingUp },
-  { title: "Calendar", url: "/calendar", icon: Calendar },
-  { title: "Leaderboards", url: "/leaderboards", icon: Trophy },
-  { title: "Resources", url: "/resources", icon: Library },
-  { title: "Settings", url: "/settings", icon: Settings },
+  { title: "Home", url: "/app", icon: Home },
+  { title: "AI Tutor", url: "/app/ai-tutor", icon: Sparkles },
+  { title: "Learn", url: "/app/learn", icon: BookOpen },
+  { title: "Social", url: "/app/social", icon: Users },
+  { title: "Study Groups", url: "/app/study-groups", icon: UsersRound },
+  { title: "Notes", url: "/app/notes", icon: StickyNote },
+  { title: "Flashcards", url: "/app/flashcards", icon: Layers },
+  { title: "Quizzes", url: "/app/quizzes", icon: HelpCircle },
+  { title: "Progress", url: "/app/progress", icon: TrendingUp },
+  { title: "Calendar", url: "/app/calendar", icon: Calendar },
+  { title: "Leaderboards", url: "/app/leaderboards", icon: Trophy },
+  { title: "Resources", url: "/app/resources", icon: Library },
+  { title: "Settings", url: "/app/settings", icon: Settings },
 ] as const;
 
 export function AppSidebar() {
