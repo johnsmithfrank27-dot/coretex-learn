@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { PageHeader } from "@/components/page-header";
 import { FileText, Video, Link2, Book, Download } from "lucide-react";
 
-export const Route = createFileRoute("/_app/resources")({ component: Resources });
+export const Route = createFileRoute("/app/resources")({ component: Resources });
 
 const items = [
   { t: "Algebra Cheatsheet", type: "PDF", i: FileText },

@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { PageHeader } from "@/components/page-header";
 import { CheckCircle2, XCircle, Sparkles, Trophy } from "lucide-react";
 
-export const Route = createFileRoute("/_app/quizzes")({ component: Quizzes });
+export const Route = createFileRoute("/app/quizzes")({ component: Quizzes });
 
 function Quizzes() {
   return (

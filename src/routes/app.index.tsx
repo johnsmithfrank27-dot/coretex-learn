@@ -11,7 +11,7 @@ import subjPhy from "@/assets/subject-physics.jpg";
 import subjChem from "@/assets/subject-chemistry.jpg";
 import avatarFrank from "@/assets/avatar-frank.jpg";
 
-export const Route = createFileRoute("/_app/")({
+export const Route = createFileRoute("/app/")({
   component: HomePage,
 });
 

@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { PageHeader } from "@/components/page-header";
 import avatar from "@/assets/avatar-frank.jpg";
 
-export const Route = createFileRoute("/_app/settings")({ component: Settings });
+export const Route = createFileRoute("/app/settings")({ component: Settings });
 
 function Settings() {
   return (
