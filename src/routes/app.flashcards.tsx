@@ -3,7 +3,7 @@ import { PageHeader } from "@/components/page-header";
 import { useState } from "react";
 import { ChevronLeft, ChevronRight, RefreshCw, Sparkles } from "lucide-react";
 
-export const Route = createFileRoute("/_app/flashcards")({ component: Flashcards });
+export const Route = createFileRoute("/app/flashcards")({ component: Flashcards });
 
 const deck = [
   { q: "What is the powerhouse of the cell?", a: "Mitochondria" },

@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { PageHeader } from "@/components/page-header";
 import { Trophy, Flame } from "lucide-react";
 
-export const Route = createFileRoute("/_app/leaderboards")({ component: LB });
+export const Route = createFileRoute("/app/leaderboards")({ component: LB });
 
 const top = [
   { n: "Ama Serwaa", xp: 5420, streak: 28 },

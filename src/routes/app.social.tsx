@@ -5,7 +5,7 @@ import avatar from "@/assets/avatar-frank.jpg";
 import bio from "@/assets/subject-biology.jpg";
 import phy from "@/assets/subject-physics.jpg";
 
-export const Route = createFileRoute("/_app/social")({ component: Social });
+export const Route = createFileRoute("/app/social")({ component: Social });
 
 function Social() {
   return (

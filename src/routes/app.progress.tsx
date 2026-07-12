@@ -3,7 +3,7 @@ import { PageHeader } from "@/components/page-header";
 import { TrendingUp, Zap, Trophy, Target, Flame } from "lucide-react";
 import { LineChart, Line, ResponsiveContainer, XAxis, YAxis, Tooltip, PieChart, Pie, Cell, BarChart, Bar, CartesianGrid } from "recharts";
 
-export const Route = createFileRoute("/_app/progress")({ component: Progress });
+export const Route = createFileRoute("/app/progress")({ component: Progress });
 
 const week = [
   { d: "Mon", h: 2 }, { d: "Tue", h: 3.5 }, { d: "Wed", h: 2.5 }, { d: "Thu", h: 4 },

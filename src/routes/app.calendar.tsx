@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { PageHeader } from "@/components/page-header";
 import { Calendar as CalIcon } from "lucide-react";
 
-export const Route = createFileRoute("/_app/calendar")({ component: CalendarPage });
+export const Route = createFileRoute("/app/calendar")({ component: CalendarPage });
 
 const events = [
   { d: 12, t: "Math Assignment", time: "14:00", color: "bg-primary" },

@@ -6,7 +6,7 @@ import bio from "@/assets/subject-biology.jpg";
 import phy from "@/assets/subject-physics.jpg";
 import chem from "@/assets/subject-chemistry.jpg";
 
-export const Route = createFileRoute("/_app/learn")({ component: Learn });
+export const Route = createFileRoute("/app/learn")({ component: Learn });
 
 const courses = [
   { t: "Algebra Foundations", s: "Mathematics", img: math, l: "Beginner", h: "12h", r: 4.9 },

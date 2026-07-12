@@ -9,35 +9,31 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as AppRouteImport } from './routes/_app'
-import { Route as AppIndexRouteImport } from './routes/_app.index'
+import { Route as AppRouteImport } from './routes/app'
+import { Route as AppIndexRouteImport } from './routes/app.index'
+import { Route as AppStudyGroupsRouteImport } from './routes/app.study-groups'
+import { Route as AppSocialRouteImport } from './routes/app.social'
+import { Route as AppSettingsRouteImport } from './routes/app.settings'
+import { Route as AppResourcesRouteImport } from './routes/app.resources'
+import { Route as AppQuizzesRouteImport } from './routes/app.quizzes'
+import { Route as AppProgressRouteImport } from './routes/app.progress'
+import { Route as AppNotesRouteImport } from './routes/app.notes'
+import { Route as AppLearnRouteImport } from './routes/app.learn'
+import { Route as AppLeaderboardsRouteImport } from './routes/app.leaderboards'
+import { Route as AppFlashcardsRouteImport } from './routes/app.flashcards'
+import { Route as AppCalendarRouteImport } from './routes/app.calendar'
+import { Route as AppAiTutorRouteImport } from './routes/app.ai-tutor'
 import { Route as ApiChatRouteImport } from './routes/api/chat'
-import { Route as AppStudyGroupsRouteImport } from './routes/_app.study-groups'
-import { Route as AppSocialRouteImport } from './routes/_app.social'
-import { Route as AppSettingsRouteImport } from './routes/_app.settings'
-import { Route as AppResourcesRouteImport } from './routes/_app.resources'
-import { Route as AppQuizzesRouteImport } from './routes/_app.quizzes'
-import { Route as AppProgressRouteImport } from './routes/_app.progress'
-import { Route as AppNotesRouteImport } from './routes/_app.notes'
-import { Route as AppLearnRouteImport } from './routes/_app.learn'
-import { Route as AppLeaderboardsRouteImport } from './routes/_app.leaderboards'
-import { Route as AppFlashcardsRouteImport } from './routes/_app.flashcards'
-import { Route as AppCalendarRouteImport } from './routes/_app.calendar'
-import { Route as AppAiTutorRouteImport } from './routes/_app.ai-tutor'
 
 const AppRoute = AppRouteImport.update({
-  id: '/_app',
+  id: '/app',
+  path: '/app',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AppIndexRoute = AppIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => AppRoute,
-} as any)
-const ApiChatRoute = ApiChatRouteImport.update({
-  id: '/api/chat',
-  path: '/api/chat',
-  getParentRoute: () => rootRouteImport,
 } as any)
 const AppStudyGroupsRoute = AppStudyGroupsRouteImport.update({
   id: '/study-groups',
@@ -99,107 +95,114 @@ const AppAiTutorRoute = AppAiTutorRouteImport.update({
   path: '/ai-tutor',
   getParentRoute: () => AppRoute,
 } as any)
+const ApiChatRoute = ApiChatRouteImport.update({
+  id: '/api/chat',
+  path: '/api/chat',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof AppIndexRoute
-  '/ai-tutor': typeof AppAiTutorRoute
-  '/calendar': typeof AppCalendarRoute
-  '/flashcards': typeof AppFlashcardsRoute
-  '/leaderboards': typeof AppLeaderboardsRoute
-  '/learn': typeof AppLearnRoute
-  '/notes': typeof AppNotesRoute
-  '/progress': typeof AppProgressRoute
-  '/quizzes': typeof AppQuizzesRoute
-  '/resources': typeof AppResourcesRoute
-  '/settings': typeof AppSettingsRoute
-  '/social': typeof AppSocialRoute
-  '/study-groups': typeof AppStudyGroupsRoute
+  '/app': typeof AppRouteWithChildren
   '/api/chat': typeof ApiChatRoute
+  '/app/ai-tutor': typeof AppAiTutorRoute
+  '/app/calendar': typeof AppCalendarRoute
+  '/app/flashcards': typeof AppFlashcardsRoute
+  '/app/leaderboards': typeof AppLeaderboardsRoute
+  '/app/learn': typeof AppLearnRoute
+  '/app/notes': typeof AppNotesRoute
+  '/app/progress': typeof AppProgressRoute
+  '/app/quizzes': typeof AppQuizzesRoute
+  '/app/resources': typeof AppResourcesRoute
+  '/app/settings': typeof AppSettingsRoute
+  '/app/social': typeof AppSocialRoute
+  '/app/study-groups': typeof AppStudyGroupsRoute
+  '/app/': typeof AppIndexRoute
 }
 export interface FileRoutesByTo {
-  '/ai-tutor': typeof AppAiTutorRoute
-  '/calendar': typeof AppCalendarRoute
-  '/flashcards': typeof AppFlashcardsRoute
-  '/leaderboards': typeof AppLeaderboardsRoute
-  '/learn': typeof AppLearnRoute
-  '/notes': typeof AppNotesRoute
-  '/progress': typeof AppProgressRoute
-  '/quizzes': typeof AppQuizzesRoute
-  '/resources': typeof AppResourcesRoute
-  '/settings': typeof AppSettingsRoute
-  '/social': typeof AppSocialRoute
-  '/study-groups': typeof AppStudyGroupsRoute
   '/api/chat': typeof ApiChatRoute
-  '/': typeof AppIndexRoute
+  '/app/ai-tutor': typeof AppAiTutorRoute
+  '/app/calendar': typeof AppCalendarRoute
+  '/app/flashcards': typeof AppFlashcardsRoute
+  '/app/leaderboards': typeof AppLeaderboardsRoute
+  '/app/learn': typeof AppLearnRoute
+  '/app/notes': typeof AppNotesRoute
+  '/app/progress': typeof AppProgressRoute
+  '/app/quizzes': typeof AppQuizzesRoute
+  '/app/resources': typeof AppResourcesRoute
+  '/app/settings': typeof AppSettingsRoute
+  '/app/social': typeof AppSocialRoute
+  '/app/study-groups': typeof AppStudyGroupsRoute
+  '/app': typeof AppIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/_app': typeof AppRouteWithChildren
-  '/_app/ai-tutor': typeof AppAiTutorRoute
-  '/_app/calendar': typeof AppCalendarRoute
-  '/_app/flashcards': typeof AppFlashcardsRoute
-  '/_app/leaderboards': typeof AppLeaderboardsRoute
-  '/_app/learn': typeof AppLearnRoute
-  '/_app/notes': typeof AppNotesRoute
-  '/_app/progress': typeof AppProgressRoute
-  '/_app/quizzes': typeof AppQuizzesRoute
-  '/_app/resources': typeof AppResourcesRoute
-  '/_app/settings': typeof AppSettingsRoute
-  '/_app/social': typeof AppSocialRoute
-  '/_app/study-groups': typeof AppStudyGroupsRoute
+  '/app': typeof AppRouteWithChildren
   '/api/chat': typeof ApiChatRoute
-  '/_app/': typeof AppIndexRoute
+  '/app/ai-tutor': typeof AppAiTutorRoute
+  '/app/calendar': typeof AppCalendarRoute
+  '/app/flashcards': typeof AppFlashcardsRoute
+  '/app/leaderboards': typeof AppLeaderboardsRoute
+  '/app/learn': typeof AppLearnRoute
+  '/app/notes': typeof AppNotesRoute
+  '/app/progress': typeof AppProgressRoute
+  '/app/quizzes': typeof AppQuizzesRoute
+  '/app/resources': typeof AppResourcesRoute
+  '/app/settings': typeof AppSettingsRoute
+  '/app/social': typeof AppSocialRoute
+  '/app/study-groups': typeof AppStudyGroupsRoute
+  '/app/': typeof AppIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    | '/'
-    | '/ai-tutor'
-    | '/calendar'
-    | '/flashcards'
-    | '/leaderboards'
-    | '/learn'
-    | '/notes'
-    | '/progress'
-    | '/quizzes'
-    | '/resources'
-    | '/settings'
-    | '/social'
-    | '/study-groups'
+    | '/app'
     | '/api/chat'
+    | '/app/ai-tutor'
+    | '/app/calendar'
+    | '/app/flashcards'
+    | '/app/leaderboards'
+    | '/app/learn'
+    | '/app/notes'
+    | '/app/progress'
+    | '/app/quizzes'
+    | '/app/resources'
+    | '/app/settings'
+    | '/app/social'
+    | '/app/study-groups'
+    | '/app/'
   fileRoutesByTo: FileRoutesByTo
   to:
-    | '/ai-tutor'
-    | '/calendar'
-    | '/flashcards'
-    | '/leaderboards'
-    | '/learn'
-    | '/notes'
-    | '/progress'
-    | '/quizzes'
-    | '/resources'
-    | '/settings'
-    | '/social'
-    | '/study-groups'
     | '/api/chat'
-    | '/'
+    | '/app/ai-tutor'
+    | '/app/calendar'
+    | '/app/flashcards'
+    | '/app/leaderboards'
+    | '/app/learn'
+    | '/app/notes'
+    | '/app/progress'
+    | '/app/quizzes'
+    | '/app/resources'
+    | '/app/settings'
+    | '/app/social'
+    | '/app/study-groups'
+    | '/app'
   id:
     | '__root__'
-    | '/_app'
-    | '/_app/ai-tutor'
-    | '/_app/calendar'
-    | '/_app/flashcards'
-    | '/_app/leaderboards'
-    | '/_app/learn'
-    | '/_app/notes'
-    | '/_app/progress'
-    | '/_app/quizzes'
-    | '/_app/resources'
-    | '/_app/settings'
-    | '/_app/social'
-    | '/_app/study-groups'
+    | '/app'
     | '/api/chat'
-    | '/_app/'
+    | '/app/ai-tutor'
+    | '/app/calendar'
+    | '/app/flashcards'
+    | '/app/leaderboards'
+    | '/app/learn'
+    | '/app/notes'
+    | '/app/progress'
+    | '/app/quizzes'
+    | '/app/resources'
+    | '/app/settings'
+    | '/app/social'
+    | '/app/study-groups'
+    | '/app/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -209,18 +212,102 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/_app': {
-      id: '/_app'
-      path: ''
-      fullPath: '/'
+    '/app': {
+      id: '/app'
+      path: '/app'
+      fullPath: '/app'
       preLoaderRoute: typeof AppRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_app/': {
-      id: '/_app/'
+    '/app/': {
+      id: '/app/'
       path: '/'
-      fullPath: '/'
+      fullPath: '/app/'
       preLoaderRoute: typeof AppIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/study-groups': {
+      id: '/app/study-groups'
+      path: '/study-groups'
+      fullPath: '/app/study-groups'
+      preLoaderRoute: typeof AppStudyGroupsRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/social': {
+      id: '/app/social'
+      path: '/social'
+      fullPath: '/app/social'
+      preLoaderRoute: typeof AppSocialRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/settings': {
+      id: '/app/settings'
+      path: '/settings'
+      fullPath: '/app/settings'
+      preLoaderRoute: typeof AppSettingsRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/resources': {
+      id: '/app/resources'
+      path: '/resources'
+      fullPath: '/app/resources'
+      preLoaderRoute: typeof AppResourcesRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/quizzes': {
+      id: '/app/quizzes'
+      path: '/quizzes'
+      fullPath: '/app/quizzes'
+      preLoaderRoute: typeof AppQuizzesRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/progress': {
+      id: '/app/progress'
+      path: '/progress'
+      fullPath: '/app/progress'
+      preLoaderRoute: typeof AppProgressRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/notes': {
+      id: '/app/notes'
+      path: '/notes'
+      fullPath: '/app/notes'
+      preLoaderRoute: typeof AppNotesRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/learn': {
+      id: '/app/learn'
+      path: '/learn'
+      fullPath: '/app/learn'
+      preLoaderRoute: typeof AppLearnRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/leaderboards': {
+      id: '/app/leaderboards'
+      path: '/leaderboards'
+      fullPath: '/app/leaderboards'
+      preLoaderRoute: typeof AppLeaderboardsRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/flashcards': {
+      id: '/app/flashcards'
+      path: '/flashcards'
+      fullPath: '/app/flashcards'
+      preLoaderRoute: typeof AppFlashcardsRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/calendar': {
+      id: '/app/calendar'
+      path: '/calendar'
+      fullPath: '/app/calendar'
+      preLoaderRoute: typeof AppCalendarRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/ai-tutor': {
+      id: '/app/ai-tutor'
+      path: '/ai-tutor'
+      fullPath: '/app/ai-tutor'
+      preLoaderRoute: typeof AppAiTutorRouteImport
       parentRoute: typeof AppRoute
     }
     '/api/chat': {
@@ -229,90 +316,6 @@ declare module '@tanstack/react-router' {
       fullPath: '/api/chat'
       preLoaderRoute: typeof ApiChatRouteImport
       parentRoute: typeof rootRouteImport
-    }
-    '/_app/study-groups': {
-      id: '/_app/study-groups'
-      path: '/study-groups'
-      fullPath: '/study-groups'
-      preLoaderRoute: typeof AppStudyGroupsRouteImport
-      parentRoute: typeof AppRoute
-    }
-    '/_app/social': {
-      id: '/_app/social'
-      path: '/social'
-      fullPath: '/social'
-      preLoaderRoute: typeof AppSocialRouteImport
-      parentRoute: typeof AppRoute
-    }
-    '/_app/settings': {
-      id: '/_app/settings'
-      path: '/settings'
-      fullPath: '/settings'
-      preLoaderRoute: typeof AppSettingsRouteImport
-      parentRoute: typeof AppRoute
-    }
-    '/_app/resources': {
-      id: '/_app/resources'
-      path: '/resources'
-      fullPath: '/resources'
-      preLoaderRoute: typeof AppResourcesRouteImport
-      parentRoute: typeof AppRoute
-    }
-    '/_app/quizzes': {
-      id: '/_app/quizzes'
-      path: '/quizzes'
-      fullPath: '/quizzes'
-      preLoaderRoute: typeof AppQuizzesRouteImport
-      parentRoute: typeof AppRoute
-    }
-    '/_app/progress': {
-      id: '/_app/progress'
-      path: '/progress'
-      fullPath: '/progress'
-      preLoaderRoute: typeof AppProgressRouteImport
-      parentRoute: typeof AppRoute
-    }
-    '/_app/notes': {
-      id: '/_app/notes'
-      path: '/notes'
-      fullPath: '/notes'
-      preLoaderRoute: typeof AppNotesRouteImport
-      parentRoute: typeof AppRoute
-    }
-    '/_app/learn': {
-      id: '/_app/learn'
-      path: '/learn'
-      fullPath: '/learn'
-      preLoaderRoute: typeof AppLearnRouteImport
-      parentRoute: typeof AppRoute
-    }
-    '/_app/leaderboards': {
-      id: '/_app/leaderboards'
-      path: '/leaderboards'
-      fullPath: '/leaderboards'
-      preLoaderRoute: typeof AppLeaderboardsRouteImport
-      parentRoute: typeof AppRoute
-    }
-    '/_app/flashcards': {
-      id: '/_app/flashcards'
-      path: '/flashcards'
-      fullPath: '/flashcards'
-      preLoaderRoute: typeof AppFlashcardsRouteImport
-      parentRoute: typeof AppRoute
-    }
-    '/_app/calendar': {
-      id: '/_app/calendar'
-      path: '/calendar'
-      fullPath: '/calendar'
-      preLoaderRoute: typeof AppCalendarRouteImport
-      parentRoute: typeof AppRoute
-    }
-    '/_app/ai-tutor': {
-      id: '/_app/ai-tutor'
-      path: '/ai-tutor'
-      fullPath: '/ai-tutor'
-      preLoaderRoute: typeof AppAiTutorRouteImport
-      parentRoute: typeof AppRoute
     }
   }
 }

@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { PageHeader } from "@/components/page-header";
 import mascot from "@/assets/ai-mascot.png";
 
-export const Route = createFileRoute("/_app/ai-tutor")({ component: AiTutor });
+export const Route = createFileRoute("/app/ai-tutor")({ component: AiTutor });
 
 const actions = [
   { i: BookOpen, l: "Explain", p: "Explain this topic simply: " },

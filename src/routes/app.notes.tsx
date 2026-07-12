@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { PageHeader } from "@/components/page-header";
 import { Sparkles, Layers, HelpCircle, Bookmark, Download, Plus } from "lucide-react";
 
-export const Route = createFileRoute("/_app/notes")({ component: Notes });
+export const Route = createFileRoute("/app/notes")({ component: Notes });
 
 const notes = [
   { title: "Cell Structure & Function", subject: "Biology", body: "Prokaryotes lack a nucleus while eukaryotes have membrane-bound organelles including mitochondria, the powerhouse of the cell…", color: "from-emerald-100 to-teal-50" },

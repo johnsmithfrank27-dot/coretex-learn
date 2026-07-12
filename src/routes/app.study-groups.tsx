@@ -6,7 +6,7 @@ import bio from "@/assets/subject-biology.jpg";
 import phy from "@/assets/subject-physics.jpg";
 import chem from "@/assets/subject-chemistry.jpg";
 
-export const Route = createFileRoute("/_app/study-groups")({ component: Groups });
+export const Route = createFileRoute("/app/study-groups")({ component: Groups });
 
 const groups = [
   { name: "AS Mathematics Group", subject: "Mathematics", members: 12, active: 8, img: math },
