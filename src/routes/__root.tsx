@@ -11,8 +11,6 @@ import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
-import { AuthProvider } from "../lib/auth-context";
-import { Toaster } from "sonner";
 
 function NotFoundComponent() {
   return (
@@ -79,17 +77,17 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Coretex  AI— The Future of Learning" },
+      { title: "Coretex AI — The Future of Learning" },
       { name: "description", content: "AI tutoring, social learning, flashcards, quizzes and gamification — all in one beautifully designed platform." },
       { name: "author", content: "Coretex" },
-      { property: "og:title", content: "Coretex  AI— The Future of Learning" },
+      { property: "og:title", content: "Coretex AI — The Future of Learning" },
       { property: "og:description", content: "AI tutoring, social learning, flashcards, quizzes and gamification — all in one beautifully designed platform." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: "Coretex  AI— The Future of Learning" },
+      { name: "twitter:title", content: "Coretex AI — The Future of Learning" },
       { name: "twitter:description", content: "AI tutoring, social learning, flashcards, quizzes and gamification — all in one beautifully designed platform." },
-      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/83742f13-cc4e-4a40-8a74-9e79874a4ed8" },
-      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/83742f13-cc4e-4a40-8a74-9e79874a4ed8" },
+      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/b199f00b-8660-4edc-935c-2579c91b2a17" },
+      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/b199f00b-8660-4edc-935c-2579c91b2a17" },
     ],
     links: [
       {
@@ -126,11 +124,8 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <AuthProvider>
-        {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-        <Outlet />
-        <Toaster position="top-right" richColors />
-      </AuthProvider>
+      {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
+      <Outlet />
     </QueryClientProvider>
   );
 }
