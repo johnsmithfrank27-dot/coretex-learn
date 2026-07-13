@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { CoretexLogo } from "@/components/coretex-logo";
 import { useEffect, useState } from "react";
+import { useAuth } from "@/lib/auth-context";
 
 const links = [
   { label: "Features", href: "#features" },
@@ -12,6 +13,7 @@ const links = [
 
 export function MarketingNav() {
   const [scrolled, setScrolled] = useState(false);
+  const { session } = useAuth();
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8);
     window.addEventListener("scroll", onScroll);
@@ -31,8 +33,14 @@ export function MarketingNav() {
           ))}
         </nav>
         <div className="flex items-center gap-2">
-          <Link to="/login" className="hidden sm:inline-flex h-10 items-center rounded-full px-4 text-sm font-semibold text-foreground hover:bg-secondary transition">Sign In</Link>
-          <Link to="/signup" className="inline-flex h-10 items-center rounded-full bg-gradient-primary px-5 text-sm font-semibold text-primary-foreground shadow-elegant hover:shadow-glow transition-all">Get Started</Link>
+          {session ? (
+            <Link to="/app" className="inline-flex h-10 items-center rounded-full bg-gradient-primary px-5 text-sm font-semibold text-primary-foreground shadow-elegant hover:shadow-glow transition-all">Open app</Link>
+          ) : (
+            <>
+              <Link to="/login" className="hidden sm:inline-flex h-10 items-center rounded-full px-4 text-sm font-semibold text-foreground hover:bg-secondary transition">Sign In</Link>
+              <Link to="/signup" className="inline-flex h-10 items-center rounded-full bg-gradient-primary px-5 text-sm font-semibold text-primary-foreground shadow-elegant hover:shadow-glow transition-all">Get Started</Link>
+            </>
+          )}
         </div>
       </div>
     </header>

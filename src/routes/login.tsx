@@ -1,8 +1,12 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { CoretexLogo } from "@/components/coretex-logo";
-import { ArrowRight, Mail, Lock, Eye, EyeOff } from "lucide-react";
+import { ArrowRight, Mail, Lock, Eye, EyeOff, Loader2 } from "lucide-react";
 import authImg from "@/assets/auth-illustration.jpg";
+import { supabase } from "@/integrations/supabase/client";
+import { lovable } from "@/integrations/lovable";
+import { useAuth } from "@/lib/auth-context";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/login")({
   head: () => ({ meta: [{ title: "Sign in — Coretex" }, { name: "description", content: "Welcome back to Coretex." }] }),
@@ -11,7 +15,34 @@ export const Route = createFileRoute("/login")({
 
 function Login() {
   const nav = useNavigate();
+  const { session } = useAuth();
   const [show, setShow] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [busy, setBusy] = useState(false);
+
+  useEffect(() => {
+    if (session) nav({ to: "/app" });
+  }, [session, nav]);
+
+  async function handleEmailLogin(e: React.FormEvent) {
+    e.preventDefault();
+    setBusy(true);
+    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    setBusy(false);
+    if (error) { toast.error(error.message); return; }
+    toast.success("Welcome back!");
+    nav({ to: "/app" });
+  }
+
+  async function handleGoogle() {
+    setBusy(true);
+    const res = await lovable.auth.signInWithOAuth("google", { redirect_uri: window.location.origin });
+    setBusy(false);
+    if (res.error) { toast.error(String(res.error.message ?? res.error)); return; }
+    if (!res.redirected) nav({ to: "/app" });
+  }
+
   return (
     <div className="min-h-screen grid lg:grid-cols-2 bg-background">
       <aside className="relative hidden lg:flex flex-col justify-between overflow-hidden bg-gradient-hero p-10 text-primary-foreground">
@@ -30,23 +61,19 @@ function Login() {
           <div className="lg:hidden mb-8"><Link to="/"><CoretexLogo /></Link></div>
           <h1 className="text-3xl font-extrabold tracking-tight">Welcome back</h1>
           <p className="mt-2 text-sm text-muted-foreground">Sign in to continue your learning journey.</p>
-          <form onSubmit={(e)=>{e.preventDefault(); nav({ to: "/app" });}} className="mt-8 space-y-4">
-            <Field icon={Mail} label="Email" type="email" placeholder="you@school.edu" />
-            <div>
-              <Field icon={Lock} label="Password" type={show?"text":"password"} placeholder="••••••••"
-                trailing={<button type="button" onClick={()=>setShow(s=>!s)} className="text-muted-foreground hover:text-foreground">{show?<EyeOff className="h-4 w-4"/>:<Eye className="h-4 w-4"/>}</button>} />
-            </div>
-            <div className="flex items-center justify-between text-sm">
-              <label className="inline-flex items-center gap-2"><input type="checkbox" className="rounded border-border" /> Remember me</label>
-              <a href="#" className="text-primary font-semibold">Forgot password?</a>
-            </div>
-            <button className="inline-flex w-full h-12 items-center justify-center gap-2 rounded-full bg-gradient-primary text-sm font-semibold text-primary-foreground shadow-elegant hover:shadow-glow transition-all">Sign In <ArrowRight className="h-4 w-4" /></button>
+          <form onSubmit={handleEmailLogin} className="mt-8 space-y-4">
+            <Field icon={Mail} label="Email" type="email" placeholder="you@school.edu" required value={email} onChange={(e)=>setEmail(e.target.value)} />
+            <Field icon={Lock} label="Password" type={show?"text":"password"} placeholder="••••••••" required value={password} onChange={(e)=>setPassword(e.target.value)}
+              trailing={<button type="button" onClick={()=>setShow(s=>!s)} className="text-muted-foreground hover:text-foreground">{show?<EyeOff className="h-4 w-4"/>:<Eye className="h-4 w-4"/>}</button>} />
+            <button disabled={busy} className="inline-flex w-full h-12 items-center justify-center gap-2 rounded-full bg-gradient-primary text-sm font-semibold text-primary-foreground shadow-elegant hover:shadow-glow transition-all disabled:opacity-60">
+              {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : <>Sign In <ArrowRight className="h-4 w-4" /></>}
+            </button>
           </form>
           <div className="my-6 flex items-center gap-3 text-xs text-muted-foreground"><div className="h-px flex-1 bg-border" />OR<div className="h-px flex-1 bg-border" /></div>
           <div className="space-y-2">
-            <OAuth label="Continue with Google" />
-            <OAuth label="Continue with Microsoft" />
-            <OAuth label="Continue with Apple" />
+            <button onClick={handleGoogle} disabled={busy} className="inline-flex w-full h-12 items-center justify-center gap-2 rounded-2xl border border-border bg-background text-sm font-semibold hover:bg-secondary transition disabled:opacity-60">
+              <GoogleIcon /> Continue with Google
+            </button>
           </div>
           <div className="mt-8 text-center text-sm text-muted-foreground">
             Don't have an account? <Link to="/signup" className="font-semibold text-primary">Sign up</Link>
@@ -70,10 +97,13 @@ function Field({ icon: Icon, label, trailing, ...p }: { icon: React.ElementType;
   );
 }
 
-function OAuth({ label }: { label: string }) {
+function GoogleIcon() {
   return (
-    <button className="inline-flex w-full h-12 items-center justify-center gap-2 rounded-2xl border border-border bg-background text-sm font-semibold hover:bg-secondary transition">
-      {label}
-    </button>
+    <svg width="18" height="18" viewBox="0 0 48 48" aria-hidden>
+      <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
+      <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
+      <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
+      <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+    </svg>
   );
 }

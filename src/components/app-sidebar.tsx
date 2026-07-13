@@ -1,4 +1,4 @@
-import { Link, useRouterState } from "@tanstack/react-router";
+import { Link, useRouterState, useNavigate } from "@tanstack/react-router";
 import {
   Home,
   Sparkles,
@@ -14,11 +14,12 @@ import {
   Library,
   Settings,
   Flame,
+  LogOut,
 } from "lucide-react";
 import { CoretexLogo } from "./coretex-logo";
-import avatarFrank from "@/assets/avatar-frank.jpg";
+import { useAuth } from "@/lib/auth-context";
 
-const nav = [
+const navItems = [
   { title: "Home", url: "/app", icon: Home },
   { title: "AI Tutor", url: "/app/ai-tutor", icon: Sparkles },
   { title: "Learn", url: "/app/learn", icon: BookOpen },
@@ -36,6 +37,15 @@ const nav = [
 
 export function AppSidebar() {
   const currentPath = useRouterState({ select: (r) => r.location.pathname });
+  const { user, profile, signOut } = useAuth();
+  const navigate = useNavigate();
+  const displayName = profile?.display_name || user?.email?.split("@")[0] || "You";
+  const initials = displayName.slice(0, 2).toUpperCase();
+
+  async function handleSignOut() {
+    await signOut();
+    navigate({ to: "/" });
+  }
 
   return (
     <aside className="hidden lg:flex sticky top-0 h-screen w-64 shrink-0 flex-col border-r border-border bg-sidebar px-4 py-6">
@@ -44,7 +54,7 @@ export function AppSidebar() {
       </div>
 
       <nav className="flex-1 space-y-1 overflow-y-auto pr-1">
-        {nav.map((item) => {
+        {navItems.map((item) => {
           const active = currentPath === item.url;
           const Icon = item.icon;
           return (
@@ -66,23 +76,21 @@ export function AppSidebar() {
 
       <div className="mt-4 rounded-2xl border border-border bg-card p-3 shadow-soft">
         <div className="flex items-center gap-3">
-          <img src={avatarFrank} alt="Frank" className="h-11 w-11 rounded-full object-cover ring-2 ring-primary/20" width={44} height={44} />
+          {profile?.avatar_url ? (
+            <img src={profile.avatar_url} alt="" className="h-11 w-11 rounded-full object-cover ring-2 ring-primary/20" />
+          ) : (
+            <div className="h-11 w-11 rounded-full bg-gradient-primary grid place-items-center text-primary-foreground font-bold ring-2 ring-primary/20">{initials}</div>
+          )}
           <div className="min-w-0 flex-1">
-            <div className="truncate text-sm font-semibold">Frank Osafo</div>
+            <div className="truncate text-sm font-semibold">{displayName}</div>
             <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-              <span className="rounded-md bg-accent px-1.5 py-0.5 font-semibold text-accent-foreground">Level 24</span>
-              <span className="inline-flex items-center gap-0.5 text-warning"><Flame className="h-3 w-3" /> 12</span>
+              <span className="rounded-md bg-accent px-1.5 py-0.5 font-semibold text-accent-foreground">{(profile?.xp ?? 0)} XP</span>
+              <span className="inline-flex items-center gap-0.5 text-warning"><Flame className="h-3 w-3" /> {profile?.streak_days ?? 0}</span>
             </div>
           </div>
-        </div>
-        <div className="mt-2.5">
-          <div className="flex justify-between text-[10px] font-medium text-muted-foreground">
-            <span>4,230 XP</span>
-            <span>6,000 XP</span>
-          </div>
-          <div className="mt-1 h-1.5 w-full rounded-full bg-muted overflow-hidden">
-            <div className="h-full w-[70%] bg-gradient-primary rounded-full" />
-          </div>
+          <button onClick={handleSignOut} title="Sign out" className="grid h-8 w-8 place-items-center rounded-lg text-muted-foreground hover:bg-secondary hover:text-foreground transition">
+            <LogOut className="h-4 w-4" />
+          </button>
         </div>
       </div>
     </aside>

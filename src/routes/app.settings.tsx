@@ -1,58 +1,85 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { PageHeader } from "@/components/page-header";
-import avatar from "@/assets/avatar-frank.jpg";
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
+import { Loader2, LogOut } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/lib/auth-context";
 
-export const Route = createFileRoute("/app/settings")({ component: Settings });
+export const Route = createFileRoute("/app/settings")({
+  head: () => ({ meta: [{ title: "Settings — Coretex" }, { name: "description", content: "Update your profile and preferences." }] }),
+  component: Settings,
+});
 
 function Settings() {
+  const { user, profile, refreshProfile, signOut } = useAuth();
+  const nav = useNavigate();
+  const [displayName, setDisplayName] = useState("");
+  const [school, setSchool] = useState("");
+  const [level, setLevel] = useState("");
+  const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+    if (profile) {
+      setDisplayName(profile.display_name ?? "");
+      setSchool(profile.school ?? "");
+      setLevel(profile.education_level ?? "");
+    }
+  }, [profile]);
+
+  async function save(e: React.FormEvent) {
+    e.preventDefault();
+    if (!user) return;
+    setSaving(true);
+    const { error } = await supabase.from("profiles").update({
+      display_name: displayName || null,
+      school: school || null,
+      education_level: level || null,
+    }).eq("id", user.id);
+    setSaving(false);
+    if (error) return toast.error(error.message);
+    await refreshProfile();
+    toast.success("Profile updated");
+  }
+
+  async function handleSignOut() {
+    await signOut();
+    nav({ to: "/" });
+  }
+
   return (
     <div className="p-6 lg:p-8">
       <PageHeader title="Settings" subtitle="Tune Coretex to fit you." />
-      <div className="max-w-3xl space-y-5">
-        <Section title="Profile">
-          <div className="flex items-center gap-4">
-            <img src={avatar} alt="" className="h-20 w-20 rounded-full object-cover ring-2 ring-primary/20" width={80} height={80} />
-            <div className="flex-1">
-              <input defaultValue="Frank Osafo" className="w-full rounded-xl border border-border bg-secondary/40 px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-ring/30" />
-              <input defaultValue="frank@coretex.app" className="mt-2 w-full rounded-xl border border-border bg-secondary/40 px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-ring/30" />
-            </div>
+      <form onSubmit={save} className="max-w-3xl space-y-5">
+        <div className="rounded-3xl border border-border bg-card p-6 shadow-soft">
+          <h3 className="font-bold mb-4">Profile</h3>
+          <div className="space-y-3">
+            <Field label="Display name" value={displayName} onChange={setDisplayName} placeholder="Your name" />
+            <Field label="Email" value={user?.email ?? ""} onChange={() => {}} disabled />
+            <Field label="School / University" value={school} onChange={setSchool} placeholder="e.g. KNUST" />
+            <Field label="Education level" value={level} onChange={setLevel} placeholder="e.g. Undergrad" />
           </div>
-        </Section>
-        <Section title="Preferences">
-          {[
-            ["Daily study reminders", true],
-            ["Weekly progress email", true],
-            ["Sound effects", false],
-            ["Show streaks on profile", true],
-          ].map(([l, on]) => (
-            <Row key={l as string} label={l as string} on={on as boolean} />
-          ))}
-        </Section>
-        <Section title="AI Tutor">
-          <Row label="Suggest AI actions on notes" on />
-          <Row label="Auto-generate flashcards from lessons" on />
-          <Row label="Explain in simpler language by default" on={false} />
-        </Section>
-      </div>
+          <button disabled={saving} className="mt-5 inline-flex h-11 items-center gap-2 rounded-full bg-gradient-primary px-5 text-sm font-semibold text-primary-foreground shadow-elegant hover:shadow-glow transition-all disabled:opacity-60">
+            {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : "Save changes"}
+          </button>
+        </div>
+        <div className="rounded-3xl border border-border bg-card p-6 shadow-soft">
+          <h3 className="font-bold mb-2">Account</h3>
+          <p className="text-sm text-muted-foreground mb-4">Sign out of Coretex on this device.</p>
+          <button type="button" onClick={handleSignOut} className="inline-flex h-11 items-center gap-2 rounded-full border border-border bg-background px-5 text-sm font-semibold hover:bg-secondary transition">
+            <LogOut className="h-4 w-4" /> Sign out
+          </button>
+        </div>
+      </form>
     </div>
   );
 }
 
-function Section({ title, children }: { title: string; children: React.ReactNode }) {
+function Field({ label, value, onChange, disabled, placeholder }: { label: string; value: string; onChange: (v: string) => void; disabled?: boolean; placeholder?: string }) {
   return (
-    <div className="rounded-3xl border border-border bg-card p-6 shadow-soft">
-      <h3 className="font-bold mb-4">{title}</h3>
-      <div className="space-y-3">{children}</div>
-    </div>
-  );
-}
-function Row({ label, on }: { label: string; on: boolean }) {
-  return (
-    <div className="flex items-center justify-between border-b last:border-0 border-border/60 py-3">
-      <span className="text-sm">{label}</span>
-      <div className={`relative h-6 w-11 rounded-full transition ${on ? "bg-gradient-primary" : "bg-muted"}`}>
-        <div className={`absolute top-0.5 h-5 w-5 rounded-full bg-white shadow transition ${on ? "left-[22px]" : "left-0.5"}`} />
-      </div>
-    </div>
+    <label className="block">
+      <div className="text-xs font-semibold mb-1.5">{label}</div>
+      <input value={value} onChange={(e) => onChange(e.target.value)} disabled={disabled} placeholder={placeholder} className="h-11 w-full rounded-xl border border-border bg-secondary/40 px-4 text-sm outline-none focus:ring-2 focus:ring-ring/30 disabled:opacity-60" />
+    </label>
   );
 }

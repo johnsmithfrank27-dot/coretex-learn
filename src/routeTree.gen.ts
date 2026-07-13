@@ -27,6 +27,7 @@ import { Route as AppFlashcardsRouteImport } from './routes/app.flashcards'
 import { Route as AppCalendarRouteImport } from './routes/app.calendar'
 import { Route as AppAiTutorRouteImport } from './routes/app.ai-tutor'
 import { Route as ApiChatRouteImport } from './routes/api/chat'
+import { Route as AppAiTutorThreadIdRouteImport } from './routes/app.ai-tutor.$threadId'
 
 const SignupRoute = SignupRouteImport.update({
   id: '/signup',
@@ -118,6 +119,11 @@ const ApiChatRoute = ApiChatRouteImport.update({
   path: '/api/chat',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AppAiTutorThreadIdRoute = AppAiTutorThreadIdRouteImport.update({
+  id: '/$threadId',
+  path: '/$threadId',
+  getParentRoute: () => AppAiTutorRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -125,7 +131,7 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
   '/api/chat': typeof ApiChatRoute
-  '/app/ai-tutor': typeof AppAiTutorRoute
+  '/app/ai-tutor': typeof AppAiTutorRouteWithChildren
   '/app/calendar': typeof AppCalendarRoute
   '/app/flashcards': typeof AppFlashcardsRoute
   '/app/leaderboards': typeof AppLeaderboardsRoute
@@ -138,13 +144,14 @@ export interface FileRoutesByFullPath {
   '/app/social': typeof AppSocialRoute
   '/app/study-groups': typeof AppStudyGroupsRoute
   '/app/': typeof AppIndexRoute
+  '/app/ai-tutor/$threadId': typeof AppAiTutorThreadIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
   '/api/chat': typeof ApiChatRoute
-  '/app/ai-tutor': typeof AppAiTutorRoute
+  '/app/ai-tutor': typeof AppAiTutorRouteWithChildren
   '/app/calendar': typeof AppCalendarRoute
   '/app/flashcards': typeof AppFlashcardsRoute
   '/app/leaderboards': typeof AppLeaderboardsRoute
@@ -157,6 +164,7 @@ export interface FileRoutesByTo {
   '/app/social': typeof AppSocialRoute
   '/app/study-groups': typeof AppStudyGroupsRoute
   '/app': typeof AppIndexRoute
+  '/app/ai-tutor/$threadId': typeof AppAiTutorThreadIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -165,7 +173,7 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
   '/api/chat': typeof ApiChatRoute
-  '/app/ai-tutor': typeof AppAiTutorRoute
+  '/app/ai-tutor': typeof AppAiTutorRouteWithChildren
   '/app/calendar': typeof AppCalendarRoute
   '/app/flashcards': typeof AppFlashcardsRoute
   '/app/leaderboards': typeof AppLeaderboardsRoute
@@ -178,6 +186,7 @@ export interface FileRoutesById {
   '/app/social': typeof AppSocialRoute
   '/app/study-groups': typeof AppStudyGroupsRoute
   '/app/': typeof AppIndexRoute
+  '/app/ai-tutor/$threadId': typeof AppAiTutorThreadIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -200,6 +209,7 @@ export interface FileRouteTypes {
     | '/app/social'
     | '/app/study-groups'
     | '/app/'
+    | '/app/ai-tutor/$threadId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -219,6 +229,7 @@ export interface FileRouteTypes {
     | '/app/social'
     | '/app/study-groups'
     | '/app'
+    | '/app/ai-tutor/$threadId'
   id:
     | '__root__'
     | '/'
@@ -239,6 +250,7 @@ export interface FileRouteTypes {
     | '/app/social'
     | '/app/study-groups'
     | '/app/'
+    | '/app/ai-tutor/$threadId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -377,11 +389,30 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiChatRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/app/ai-tutor/$threadId': {
+      id: '/app/ai-tutor/$threadId'
+      path: '/$threadId'
+      fullPath: '/app/ai-tutor/$threadId'
+      preLoaderRoute: typeof AppAiTutorThreadIdRouteImport
+      parentRoute: typeof AppAiTutorRoute
+    }
   }
 }
 
+interface AppAiTutorRouteChildren {
+  AppAiTutorThreadIdRoute: typeof AppAiTutorThreadIdRoute
+}
+
+const AppAiTutorRouteChildren: AppAiTutorRouteChildren = {
+  AppAiTutorThreadIdRoute: AppAiTutorThreadIdRoute,
+}
+
+const AppAiTutorRouteWithChildren = AppAiTutorRoute._addFileChildren(
+  AppAiTutorRouteChildren,
+)
+
 interface AppRouteChildren {
-  AppAiTutorRoute: typeof AppAiTutorRoute
+  AppAiTutorRoute: typeof AppAiTutorRouteWithChildren
   AppCalendarRoute: typeof AppCalendarRoute
   AppFlashcardsRoute: typeof AppFlashcardsRoute
   AppLeaderboardsRoute: typeof AppLeaderboardsRoute
@@ -397,7 +428,7 @@ interface AppRouteChildren {
 }
 
 const AppRouteChildren: AppRouteChildren = {
-  AppAiTutorRoute: AppAiTutorRoute,
+  AppAiTutorRoute: AppAiTutorRouteWithChildren,
   AppCalendarRoute: AppCalendarRoute,
   AppFlashcardsRoute: AppFlashcardsRoute,
   AppLeaderboardsRoute: AppLeaderboardsRoute,
@@ -424,13 +455,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
