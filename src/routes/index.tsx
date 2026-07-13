@@ -15,10 +15,10 @@ import bioImg from "@/assets/subject-biology.jpg";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Coretex — The Future of Learning" },
+      { title: "Coretex  AI— The Future of Learning" },
       { name: "description", content: "AI tutoring, social learning, flashcards, quizzes and gamification — all in one beautifully designed platform." },
-      { property: "og:title", content: "Coretex — The Future of Learning" },
-      { property: "og:description", content: "The AI-native learning platform for the next generation of students." },
+      { property: "og:title", content: "Coretex  AI— The Future of Learning" },
+      { property: "og:description", content: "AI tutoring, social learning, flashcards, quizzes and gamification — all in one beautifully designed platform." },
     ],
   }),
   component: Landing,
