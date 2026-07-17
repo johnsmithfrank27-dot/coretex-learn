@@ -1,0 +1,31 @@
+
+CREATE TABLE public.calendar_events (
+  id UUID NOT NULL DEFAULT gen_random_uuid() PRIMARY KEY,
+  user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+  title TEXT NOT NULL,
+  description TEXT,
+  category TEXT NOT NULL DEFAULT 'study',
+  starts_at TIMESTAMPTZ NOT NULL,
+  ends_at TIMESTAMPTZ,
+  all_day BOOLEAN NOT NULL DEFAULT false,
+  location TEXT,
+  color TEXT,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+GRANT SELECT, INSERT, UPDATE, DELETE ON public.calendar_events TO authenticated;
+GRANT ALL ON public.calendar_events TO service_role;
+
+ALTER TABLE public.calendar_events ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Users manage own calendar events"
+  ON public.calendar_events FOR ALL
+  USING (auth.uid() = user_id)
+  WITH CHECK (auth.uid() = user_id);
+
+CREATE INDEX calendar_events_user_start_idx ON public.calendar_events(user_id, starts_at);
+
+CREATE TRIGGER calendar_events_set_updated_at
+  BEFORE UPDATE ON public.calendar_events
+  FOR EACH ROW EXECUTE FUNCTION public.set_updated_at();

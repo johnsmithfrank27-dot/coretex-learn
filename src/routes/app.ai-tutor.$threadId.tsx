@@ -1,6 +1,7 @@
 import { createFileRoute, useNavigate, useParams } from "@tanstack/react-router";
 import { useChat } from "@ai-sdk/react";
-import { DefaultChatTransport, type UIMessage } from "ai";
+import { DefaultChatTransport, lastAssistantMessageIsCompleteWithToolCalls, type UIMessage } from "ai";
+import { supabase } from "@/integrations/supabase/client";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Sparkles, Send, Plus, Trash2, MessageSquare, Zap, BookOpen, Languages, HelpCircle, Layers, FileText } from "lucide-react";
 import { PageHeader } from "@/components/page-header";
@@ -41,11 +42,23 @@ function AiTutorThread() {
 
   useEffect(() => { setThreads(loadThreads()); }, [threadId]);
 
-  const transport = useMemo(() => new DefaultChatTransport({ api: "/api/chat" }), []);
+  const transport = useMemo(
+    () =>
+      new DefaultChatTransport({
+        api: "/api/chat",
+        headers: async (): Promise<Record<string, string>> => {
+          const { data } = await supabase.auth.getSession();
+          const token = data.session?.access_token;
+          return token ? { Authorization: `Bearer ${token}` } : {};
+        },
+      }),
+    [],
+  );
   const { messages, sendMessage, status, setMessages } = useChat({
     id: threadId,
     messages: initial,
     transport,
+    sendAutomaticallyWhen: lastAssistantMessageIsCompleteWithToolCalls,
   });
 
   // Persist thread whenever messages change
@@ -138,7 +151,18 @@ function AiTutorThread() {
             )}
             {messages.map(m => (
               <Msg key={m.id} role={m.role === "user" ? "me" : "ai"}>
-                {m.parts.map((p, i) => (p.type === "text" ? <span key={i}>{p.text}</span> : null))}
+                {m.parts.map((p, i) => {
+                  if (p.type === "text") return <span key={i}>{p.text}</span>;
+                  if (p.type.startsWith("tool-")) {
+                    const name = p.type.slice(5);
+                    return (
+                      <span key={i} className="mt-2 block rounded-lg bg-background/60 px-2 py-1 text-xs text-muted-foreground">
+                        <span className="font-semibold text-primary">⚡ {name}</span>
+                      </span>
+                    );
+                  }
+                  return null;
+                })}
               </Msg>
             ))}
             {status === "submitted" && (

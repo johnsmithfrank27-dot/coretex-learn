@@ -1,0 +1,6 @@
+
+ALTER TABLE public.gamification_challenges ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.gamification_events ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.gamification_missions ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.reward_chests ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.streaks ENABLE ROW LEVEL SECURITY;
