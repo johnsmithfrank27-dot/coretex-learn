@@ -134,7 +134,7 @@ export const Route = createFileRoute("/api/chat")({
             "When creating events, always resolve relative dates ('tomorrow', 'next Monday') to concrete ISO datetimes in the user's local time based on the current date. " +
             `Current date/time: ${new Date().toISOString()}. ` +
             "Explain clearly with concise structure, examples, and follow-up questions. Use markdown when helpful.",
-          messages: convertToModelMessages(messages),
+          messages: await convertToModelMessages(messages),
           tools,
           stopWhen: stepCountIs(8),
         });
