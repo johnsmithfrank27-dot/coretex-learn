@@ -14,15 +14,154 @@ export type Database = {
   }
   public: {
     Tables: {
+      gamification_challenges: {
+        Row: {
+          category: string
+          completed: boolean
+          created_at: string
+          description: string
+          id: string
+          reward: string
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          category?: string
+          completed?: boolean
+          created_at?: string
+          description: string
+          id?: string
+          reward: string
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          category?: string
+          completed?: boolean
+          created_at?: string
+          description?: string
+          id?: string
+          reward?: string
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "gamification_challenges_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      gamification_events: {
+        Row: {
+          created_at: string
+          event_type: string
+          id: string
+          metadata: Json | null
+          reputation_delta: number
+          user_id: string
+          xp_delta: number
+        }
+        Insert: {
+          created_at?: string
+          event_type: string
+          id?: string
+          metadata?: Json | null
+          reputation_delta?: number
+          user_id: string
+          xp_delta?: number
+        }
+        Update: {
+          created_at?: string
+          event_type?: string
+          id?: string
+          metadata?: Json | null
+          reputation_delta?: number
+          user_id?: string
+          xp_delta?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "gamification_events_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      gamification_missions: {
+        Row: {
+          category: string
+          completed: boolean
+          created_at: string
+          description: string
+          id: string
+          reward: string
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          category?: string
+          completed?: boolean
+          created_at?: string
+          description: string
+          id?: string
+          reward: string
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          category?: string
+          completed?: boolean
+          created_at?: string
+          description?: string
+          id?: string
+          reward?: string
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "gamification_missions_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
+          achievements: Json | null
           avatar_url: string | null
+          badges: Json | null
           created_at: string
+          current_season: string | null
+          current_title: string | null
           display_name: string | null
           education_level: string | null
+          featured_badges: Json | null
+          focus: number
+          focus_last_updated: string | null
           goals: string[]
           id: string
+          level: number
+          mastery_snapshot: Json | null
+          next_title: string | null
+          reputation: number
           school: string | null
+          season_level: number
+          season_xp: number
           streak_days: number
           subjects: string[]
           updated_at: string
@@ -30,13 +169,26 @@ export type Database = {
           xp: number
         }
         Insert: {
+          achievements?: Json | null
           avatar_url?: string | null
+          badges?: Json | null
           created_at?: string
+          current_season?: string | null
+          current_title?: string | null
           display_name?: string | null
           education_level?: string | null
+          featured_badges?: Json | null
+          focus?: number
+          focus_last_updated?: string | null
           goals?: string[]
           id: string
+          level?: number
+          mastery_snapshot?: Json | null
+          next_title?: string | null
+          reputation?: number
           school?: string | null
+          season_level?: number
+          season_xp?: number
           streak_days?: number
           subjects?: string[]
           updated_at?: string
@@ -44,13 +196,26 @@ export type Database = {
           xp?: number
         }
         Update: {
+          achievements?: Json | null
           avatar_url?: string | null
+          badges?: Json | null
           created_at?: string
+          current_season?: string | null
+          current_title?: string | null
           display_name?: string | null
           education_level?: string | null
+          featured_badges?: Json | null
+          focus?: number
+          focus_last_updated?: string | null
           goals?: string[]
           id?: string
+          level?: number
+          mastery_snapshot?: Json | null
+          next_title?: string | null
+          reputation?: number
           school?: string | null
+          season_level?: number
+          season_xp?: number
           streak_days?: number
           subjects?: string[]
           updated_at?: string
@@ -58,6 +223,82 @@ export type Database = {
           xp?: number
         }
         Relationships: []
+      }
+      reward_chests: {
+        Row: {
+          created_at: string
+          id: string
+          level_unlocked: number
+          opened: boolean
+          reward_name: string
+          reward_type: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          level_unlocked: number
+          opened?: boolean
+          reward_name: string
+          reward_type: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          level_unlocked?: number
+          opened?: boolean
+          reward_name?: string
+          reward_type?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reward_chests_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      streaks: {
+        Row: {
+          current_streak: number
+          id: string
+          last_activity_date: string | null
+          longest_streak: number
+          streak_type: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          current_streak?: number
+          id?: string
+          last_activity_date?: string | null
+          longest_streak?: number
+          streak_type: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          current_streak?: number
+          id?: string
+          last_activity_date?: string | null
+          longest_streak?: number
+          streak_type?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "streaks_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {
