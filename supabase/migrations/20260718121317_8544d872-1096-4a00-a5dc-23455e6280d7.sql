@@ -1,0 +1,1 @@
+DROP POLICY IF EXISTS "Profiles are viewable by authenticated users" ON public.profiles;
