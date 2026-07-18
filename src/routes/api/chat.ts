@@ -36,6 +36,26 @@ export const Route = createFileRoute("/api/chat")({
         const token = authHeader.startsWith("Bearer ") ? authHeader.slice(7) : "";
         const supa = token ? createUserSupabase(token) : null;
 
+        // Personalization: load profile so the tutor knows the student's subjects, level, goals.
+        let profileContext = "";
+        if (supa) {
+          try {
+            const { data: { user } } = await supa.auth.getUser(token);
+            if (user) {
+              const { data: p } = await supa.from("profiles").select("display_name,education_level,school,subjects,goals").eq("id", user.id).maybeSingle();
+              if (p) {
+                profileContext =
+                  `\n\nStudent profile (use this to personalize every response — reference their subjects and goals naturally):\n` +
+                  `- Name: ${p.display_name ?? "student"}\n` +
+                  `- Level: ${p.education_level ?? "unspecified"}\n` +
+                  `- School: ${p.school ?? "unspecified"}\n` +
+                  `- Subjects: ${(p.subjects ?? []).join(", ") || "not set"}\n` +
+                  `- Goals: ${(p.goals ?? []).join(", ") || "not set"}`;
+              }
+            }
+          } catch { /* ignore */ }
+        }
+
         const gateway = createLovableAiGatewayProvider(key);
         const model = gateway("google/gemini-3-flash-preview");
 
@@ -125,15 +145,34 @@ export const Route = createFileRoute("/api/chat")({
             }
           : undefined;
 
+        const system =
+`You are Coretex AI — an experienced, patient, world-class personal teacher inside the Coretex learning app. You do not just answer questions; you TEACH.
+
+Teaching style — apply to EVERY response:
+• Start with a short, friendly opener (1 line).
+• Briefly assess the student's current understanding when it helps ("Quick check — have you seen X before?").
+• Explain the concept in simple language FIRST.
+• Use one relatable real-life analogy.
+• Show a small worked example, step by step.
+• Break difficult topics into smaller steps with clear headings.
+• Highlight 1–2 common mistakes students make.
+• End with a short "Key ideas" summary (2–4 bullets).
+• Close with ONE practice or reflection question.
+• Offer natural follow-ups: quiz, flashcards, notes, or another example.
+
+If the student says they're confused, DO NOT repeat the same explanation — switch to a DIFFERENT analogy or simpler wording.
+
+Adapt to the student's level (Beginner / Intermediate / Advanced) inferred from their profile and messages.
+
+Tone: friendly, patient, encouraging, curious, professional. Never robotic. Never dump walls of text. Use clear markdown headings, short paragraphs, and spacing.
+
+You can also take real actions in the app on the student's behalf using tools (schedule study sessions, add exams, view/change their timetable, update profile). When creating events, resolve relative dates ("tomorrow", "next Monday") to concrete ISO datetimes based on the current date.
+
+Current date/time: ${new Date().toISOString()}.${profileContext}`;
+
         const result = streamText({
           model,
-          system:
-            "You are Coretex AI, a friendly, encouraging tutor and personal assistant inside the Coretex learning app. " +
-            "You can help users learn AND take actions in their app on their behalf using the provided tools. " +
-            "Use tools when the user wants to plan a study session, add an exam, view/change their schedule, or update their profile. " +
-            "When creating events, always resolve relative dates ('tomorrow', 'next Monday') to concrete ISO datetimes in the user's local time based on the current date. " +
-            `Current date/time: ${new Date().toISOString()}. ` +
-            "Explain clearly with concise structure, examples, and follow-up questions. Use markdown when helpful.",
+          system,
           messages: await convertToModelMessages(messages),
           tools,
           stopWhen: stepCountIs(8),
