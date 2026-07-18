@@ -1,9 +1,11 @@
 import { createFileRoute, Outlet, useNavigate } from "@tanstack/react-router";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { Loader2 } from "lucide-react";
 import { AppSidebar } from "@/components/app-sidebar";
 import { TopNav } from "@/components/top-nav";
 import { useAuth } from "@/lib/auth-context";
+import { useServerFn } from "@tanstack/react-start";
+import { ensurePersonalTimetable } from "@/lib/timetable.functions";
 
 export const Route = createFileRoute("/app")({
   component: AppLayout,
@@ -12,10 +14,18 @@ export const Route = createFileRoute("/app")({
 function AppLayout() {
   const { session, loading } = useAuth();
   const nav = useNavigate();
+  const ensureTimetable = useServerFn(ensurePersonalTimetable);
+  const ranTimetable = useRef(false);
 
   useEffect(() => {
     if (!loading && !session) nav({ to: "/login" });
   }, [loading, session, nav]);
+
+  useEffect(() => {
+    if (!session || ranTimetable.current) return;
+    ranTimetable.current = true;
+    ensureTimetable().catch(() => { ranTimetable.current = false; });
+  }, [session, ensureTimetable]);
 
   if (loading || !session) {
     return (
