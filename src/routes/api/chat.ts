@@ -3,7 +3,15 @@ import { convertToModelMessages, streamText, tool, stepCountIs, type UIMessage }
 import { z } from "zod";
 import { createClient } from "@supabase/supabase-js";
 import type { Database } from "@/integrations/supabase/types";
-import { createLovableAiGatewayProvider } from "@/lib/ai-gateway.server";
+import { createOpenAICompatible } from "@ai-sdk/openai-compatible";
+
+function createGroqProvider(apiKey: string) {
+  return createOpenAICompatible({
+    name: "groq",
+    baseURL: "https://api.groq.com/openai/v1",
+    headers: { Authorization: `Bearer ${apiKey}` },
+  });
+}
 
 function createUserSupabase(token: string) {
   const url = process.env.SUPABASE_URL!;
@@ -29,8 +37,8 @@ export const Route = createFileRoute("/api/chat")({
         const { messages } = (await request.json()) as { messages?: UIMessage[] };
         if (!Array.isArray(messages)) return new Response("Messages are required", { status: 400 });
 
-        const key = process.env.LOVABLE_API_KEY;
-        if (!key) return new Response("Missing LOVABLE_API_KEY", { status: 500 });
+        const key = process.env.GROQ_API_KEY;
+        if (!key) return new Response("Missing GROQ_API_KEY", { status: 500 });
 
         const authHeader = request.headers.get("authorization") ?? "";
         const token = authHeader.startsWith("Bearer ") ? authHeader.slice(7) : "";
@@ -56,8 +64,8 @@ export const Route = createFileRoute("/api/chat")({
           } catch { /* ignore */ }
         }
 
-        const gateway = createLovableAiGatewayProvider(key);
-        const model = gateway("google/gemini-3-flash-preview");
+        const groq = createGroqProvider(key);
+        const model = groq("qwen/qwen3.6-27b");
 
         const tools = supa
           ? {
@@ -176,6 +184,10 @@ Current date/time: ${new Date().toISOString()}.${profileContext}`;
           messages: await convertToModelMessages(messages),
           tools,
           stopWhen: stepCountIs(8),
+          temperature: 0.6,
+          topP: 0.95,
+          maxOutputTokens: 2048,
+          providerOptions: { groq: { reasoning_format: "hidden" } },
         });
 
         return result.toUIMessageStreamResponse({ originalMessages: messages });

@@ -59,6 +59,161 @@ export type Database = {
         }
         Relationships: []
       }
+      community_posts: {
+        Row: {
+          ai_summary: string | null
+          author_id: string
+          body: string
+          bookmarks_count: number
+          comments_count: number
+          created_at: string
+          id: string
+          is_featured: boolean
+          likes_count: number
+          post_type: string
+          shares_count: number
+          subject: string
+          title: string
+          updated_at: string
+          visibility: string
+        }
+        Insert: {
+          ai_summary?: string | null
+          author_id: string
+          body: string
+          bookmarks_count?: number
+          comments_count?: number
+          created_at?: string
+          id?: string
+          is_featured?: boolean
+          likes_count?: number
+          post_type?: string
+          shares_count?: number
+          subject?: string
+          title: string
+          updated_at?: string
+          visibility?: string
+        }
+        Update: {
+          ai_summary?: string | null
+          author_id?: string
+          body?: string
+          bookmarks_count?: number
+          comments_count?: number
+          created_at?: string
+          id?: string
+          is_featured?: boolean
+          likes_count?: number
+          post_type?: string
+          shares_count?: number
+          subject?: string
+          title?: string
+          updated_at?: string
+          visibility?: string
+        }
+        Relationships: []
+      }
+      flashcard_items: {
+        Row: {
+          answer: string
+          audio_url: string | null
+          created_at: string
+          difficulty: string
+          flashcard_id: string
+          hint: string | null
+          id: string
+          image_url: string | null
+          last_reviewed_at: string | null
+          prompt: string
+          review_count: number
+        }
+        Insert: {
+          answer: string
+          audio_url?: string | null
+          created_at?: string
+          difficulty?: string
+          flashcard_id: string
+          hint?: string | null
+          id?: string
+          image_url?: string | null
+          last_reviewed_at?: string | null
+          prompt: string
+          review_count?: number
+        }
+        Update: {
+          answer?: string
+          audio_url?: string | null
+          created_at?: string
+          difficulty?: string
+          flashcard_id?: string
+          hint?: string | null
+          id?: string
+          image_url?: string | null
+          last_reviewed_at?: string | null
+          prompt?: string
+          review_count?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "flashcard_items_flashcard_id_fkey"
+            columns: ["flashcard_id"]
+            isOneToOne: false
+            referencedRelation: "flashcards"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      flashcards: {
+        Row: {
+          card_count: number
+          category: string
+          created_at: string
+          deck_type: string
+          difficulty: string
+          due_today: number
+          id: string
+          is_bookmarked: boolean
+          is_favorite: boolean
+          mastery_score: number
+          owner_id: string
+          source: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          card_count?: number
+          category?: string
+          created_at?: string
+          deck_type?: string
+          difficulty?: string
+          due_today?: number
+          id?: string
+          is_bookmarked?: boolean
+          is_favorite?: boolean
+          mastery_score?: number
+          owner_id: string
+          source?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          card_count?: number
+          category?: string
+          created_at?: string
+          deck_type?: string
+          difficulty?: string
+          due_today?: number
+          id?: string
+          is_bookmarked?: boolean
+          is_favorite?: boolean
+          mastery_score?: number
+          owner_id?: string
+          source?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       gamification_challenges: {
         Row: {
           category: string
@@ -185,6 +340,99 @@ export type Database = {
           },
         ]
       }
+      learning_progress: {
+        Row: {
+          created_at: string
+          daily_missions: Json
+          id: string
+          lessons_completed: number
+          mastery_score: number
+          quizzes_completed: number
+          streak_days: number
+          subject: string
+          updated_at: string
+          user_id: string
+          weekly_goals: Json
+          xp_earned: number
+        }
+        Insert: {
+          created_at?: string
+          daily_missions?: Json
+          id?: string
+          lessons_completed?: number
+          mastery_score?: number
+          quizzes_completed?: number
+          streak_days?: number
+          subject?: string
+          updated_at?: string
+          user_id: string
+          weekly_goals?: Json
+          xp_earned?: number
+        }
+        Update: {
+          created_at?: string
+          daily_missions?: Json
+          id?: string
+          lessons_completed?: number
+          mastery_score?: number
+          quizzes_completed?: number
+          streak_days?: number
+          subject?: string
+          updated_at?: string
+          user_id?: string
+          weekly_goals?: Json
+          xp_earned?: number
+        }
+        Relationships: []
+      }
+      notes: {
+        Row: {
+          ai_summary: string | null
+          content: string
+          created_at: string
+          folder: string
+          id: string
+          is_favorite: boolean
+          is_pinned: boolean
+          is_shared: boolean
+          owner_id: string
+          tags: string[]
+          title: string
+          updated_at: string
+          visibility: string
+        }
+        Insert: {
+          ai_summary?: string | null
+          content?: string
+          created_at?: string
+          folder?: string
+          id?: string
+          is_favorite?: boolean
+          is_pinned?: boolean
+          is_shared?: boolean
+          owner_id: string
+          tags?: string[]
+          title?: string
+          updated_at?: string
+          visibility?: string
+        }
+        Update: {
+          ai_summary?: string | null
+          content?: string
+          created_at?: string
+          folder?: string
+          id?: string
+          is_favorite?: boolean
+          is_pinned?: boolean
+          is_shared?: boolean
+          owner_id?: string
+          tags?: string[]
+          title?: string
+          updated_at?: string
+          visibility?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           achievements: Json | null
@@ -269,6 +517,98 @@ export type Database = {
         }
         Relationships: []
       }
+      quiz_questions: {
+        Row: {
+          correct_answer: string | null
+          created_at: string
+          explanation: string | null
+          id: string
+          image_url: string | null
+          options: Json
+          prompt: string
+          question_type: string
+          quiz_id: string
+        }
+        Insert: {
+          correct_answer?: string | null
+          created_at?: string
+          explanation?: string | null
+          id?: string
+          image_url?: string | null
+          options?: Json
+          prompt: string
+          question_type?: string
+          quiz_id: string
+        }
+        Update: {
+          correct_answer?: string | null
+          created_at?: string
+          explanation?: string | null
+          id?: string
+          image_url?: string | null
+          options?: Json
+          prompt?: string
+          question_type?: string
+          quiz_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "quiz_questions_quiz_id_fkey"
+            columns: ["quiz_id"]
+            isOneToOne: false
+            referencedRelation: "quizzes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      quizzes: {
+        Row: {
+          ai_generated: boolean
+          created_at: string
+          difficulty: string
+          id: string
+          mode: string
+          owner_id: string
+          question_count: number
+          subject: string
+          time_limit: number | null
+          title: string
+          updated_at: string
+          visibility: string
+          xp_reward: number
+        }
+        Insert: {
+          ai_generated?: boolean
+          created_at?: string
+          difficulty?: string
+          id?: string
+          mode?: string
+          owner_id: string
+          question_count?: number
+          subject?: string
+          time_limit?: number | null
+          title: string
+          updated_at?: string
+          visibility?: string
+          xp_reward?: number
+        }
+        Update: {
+          ai_generated?: boolean
+          created_at?: string
+          difficulty?: string
+          id?: string
+          mode?: string
+          owner_id?: string
+          question_count?: number
+          subject?: string
+          time_limit?: number | null
+          title?: string
+          updated_at?: string
+          visibility?: string
+          xp_reward?: number
+        }
+        Relationships: []
+      }
       reward_chests: {
         Row: {
           created_at: string
@@ -344,6 +684,83 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      study_group_members: {
+        Row: {
+          group_id: string
+          id: string
+          joined_at: string
+          role: string
+          user_id: string
+        }
+        Insert: {
+          group_id: string
+          id?: string
+          joined_at?: string
+          role?: string
+          user_id: string
+        }
+        Update: {
+          group_id?: string
+          id?: string
+          joined_at?: string
+          role?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "study_group_members_group_id_fkey"
+            columns: ["group_id"]
+            isOneToOne: false
+            referencedRelation: "study_groups"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      study_groups: {
+        Row: {
+          banner_url: string | null
+          created_at: string
+          description: string | null
+          id: string
+          invite_code: string
+          name: string
+          owner_id: string
+          profile_image_url: string | null
+          subject: string
+          updated_at: string
+          weekly_challenge: string | null
+          xp: number
+        }
+        Insert: {
+          banner_url?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          invite_code?: string
+          name: string
+          owner_id: string
+          profile_image_url?: string | null
+          subject?: string
+          updated_at?: string
+          weekly_challenge?: string | null
+          xp?: number
+        }
+        Update: {
+          banner_url?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          invite_code?: string
+          name?: string
+          owner_id?: string
+          profile_image_url?: string | null
+          subject?: string
+          updated_at?: string
+          weekly_challenge?: string | null
+          xp?: number
+        }
+        Relationships: []
       }
     }
     Views: {
