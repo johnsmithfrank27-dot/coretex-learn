@@ -1,9 +1,10 @@
 import { Search, Bell, MessageSquare, Calendar as CalIcon, Sparkles } from "lucide-react";
-import { Link } from "@tanstack/react-router";
 import { useAuth } from "@/lib/auth-context";
+import { useAiAssistant } from "@/components/ai-assistant";
 
 export function TopNav() {
   const { profile, user } = useAuth();
+  const { open } = useAiAssistant();
   const displayName = profile?.display_name || user?.email?.split("@")[0] || "You";
   const initials = displayName.slice(0, 2).toUpperCase();
   return (
@@ -20,10 +21,10 @@ export function TopNav() {
         </div>
 
         <div className="ml-auto flex items-center gap-1.5">
-          <Link to="/app/ai-tutor" className="inline-flex h-10 items-center gap-1.5 rounded-full bg-gradient-primary px-4 text-sm font-semibold text-primary-foreground shadow-elegant hover:shadow-glow transition-all">
+          <button onClick={open} className="inline-flex h-10 items-center gap-1.5 rounded-full bg-gradient-primary px-4 text-sm font-semibold text-primary-foreground shadow-elegant hover:shadow-glow transition-all">
             <Sparkles className="h-4 w-4" />
             Ask AI
-          </Link>
+          </button>
           <NavIcon><CalIcon className="h-5 w-5" /></NavIcon>
           <NavIcon badge><MessageSquare className="h-5 w-5" /></NavIcon>
           <NavIcon badge><Bell className="h-5 w-5" /></NavIcon>
