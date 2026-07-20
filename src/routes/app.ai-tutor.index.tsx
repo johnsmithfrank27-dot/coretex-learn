@@ -2,7 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect } from "react";
 import { newThreadId, loadThreads } from "@/lib/chat-threads";
 
-export const Route = createFileRoute("/app/ai-tutor")({
+export const Route = createFileRoute("/app/ai-tutor/")({
   head: () => ({ meta: [{ title: "AI Tutor — Coretex" }, { name: "description", content: "Chat with Coretex AI. Every conversation is saved on this device." }] }),
   component: AiTutorIndex,
 });

@@ -25,8 +25,8 @@ import { Route as AppLearnRouteImport } from './routes/app.learn'
 import { Route as AppLeaderboardsRouteImport } from './routes/app.leaderboards'
 import { Route as AppFlashcardsRouteImport } from './routes/app.flashcards'
 import { Route as AppCalendarRouteImport } from './routes/app.calendar'
-import { Route as AppAiTutorRouteImport } from './routes/app.ai-tutor'
 import { Route as ApiChatRouteImport } from './routes/api/chat'
+import { Route as AppAiTutorIndexRouteImport } from './routes/app.ai-tutor.index'
 import { Route as AppAiTutorThreadIdRouteImport } from './routes/app.ai-tutor.$threadId'
 
 const SignupRoute = SignupRouteImport.update({
@@ -109,20 +109,20 @@ const AppCalendarRoute = AppCalendarRouteImport.update({
   path: '/calendar',
   getParentRoute: () => AppRoute,
 } as any)
-const AppAiTutorRoute = AppAiTutorRouteImport.update({
-  id: '/ai-tutor',
-  path: '/ai-tutor',
-  getParentRoute: () => AppRoute,
-} as any)
 const ApiChatRoute = ApiChatRouteImport.update({
   id: '/api/chat',
   path: '/api/chat',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AppAiTutorIndexRoute = AppAiTutorIndexRouteImport.update({
+  id: '/ai-tutor/',
+  path: '/ai-tutor/',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppAiTutorThreadIdRoute = AppAiTutorThreadIdRouteImport.update({
-  id: '/$threadId',
-  path: '/$threadId',
-  getParentRoute: () => AppAiTutorRoute,
+  id: '/ai-tutor/$threadId',
+  path: '/ai-tutor/$threadId',
+  getParentRoute: () => AppRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
@@ -131,7 +131,6 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
   '/api/chat': typeof ApiChatRoute
-  '/app/ai-tutor': typeof AppAiTutorRouteWithChildren
   '/app/calendar': typeof AppCalendarRoute
   '/app/flashcards': typeof AppFlashcardsRoute
   '/app/leaderboards': typeof AppLeaderboardsRoute
@@ -145,13 +144,13 @@ export interface FileRoutesByFullPath {
   '/app/study-groups': typeof AppStudyGroupsRoute
   '/app/': typeof AppIndexRoute
   '/app/ai-tutor/$threadId': typeof AppAiTutorThreadIdRoute
+  '/app/ai-tutor/': typeof AppAiTutorIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
   '/api/chat': typeof ApiChatRoute
-  '/app/ai-tutor': typeof AppAiTutorRouteWithChildren
   '/app/calendar': typeof AppCalendarRoute
   '/app/flashcards': typeof AppFlashcardsRoute
   '/app/leaderboards': typeof AppLeaderboardsRoute
@@ -165,6 +164,7 @@ export interface FileRoutesByTo {
   '/app/study-groups': typeof AppStudyGroupsRoute
   '/app': typeof AppIndexRoute
   '/app/ai-tutor/$threadId': typeof AppAiTutorThreadIdRoute
+  '/app/ai-tutor': typeof AppAiTutorIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -173,7 +173,6 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
   '/api/chat': typeof ApiChatRoute
-  '/app/ai-tutor': typeof AppAiTutorRouteWithChildren
   '/app/calendar': typeof AppCalendarRoute
   '/app/flashcards': typeof AppFlashcardsRoute
   '/app/leaderboards': typeof AppLeaderboardsRoute
@@ -187,6 +186,7 @@ export interface FileRoutesById {
   '/app/study-groups': typeof AppStudyGroupsRoute
   '/app/': typeof AppIndexRoute
   '/app/ai-tutor/$threadId': typeof AppAiTutorThreadIdRoute
+  '/app/ai-tutor/': typeof AppAiTutorIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -196,7 +196,6 @@ export interface FileRouteTypes {
     | '/login'
     | '/signup'
     | '/api/chat'
-    | '/app/ai-tutor'
     | '/app/calendar'
     | '/app/flashcards'
     | '/app/leaderboards'
@@ -210,13 +209,13 @@ export interface FileRouteTypes {
     | '/app/study-groups'
     | '/app/'
     | '/app/ai-tutor/$threadId'
+    | '/app/ai-tutor/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/login'
     | '/signup'
     | '/api/chat'
-    | '/app/ai-tutor'
     | '/app/calendar'
     | '/app/flashcards'
     | '/app/leaderboards'
@@ -230,6 +229,7 @@ export interface FileRouteTypes {
     | '/app/study-groups'
     | '/app'
     | '/app/ai-tutor/$threadId'
+    | '/app/ai-tutor'
   id:
     | '__root__'
     | '/'
@@ -237,7 +237,6 @@ export interface FileRouteTypes {
     | '/login'
     | '/signup'
     | '/api/chat'
-    | '/app/ai-tutor'
     | '/app/calendar'
     | '/app/flashcards'
     | '/app/leaderboards'
@@ -251,6 +250,7 @@ export interface FileRouteTypes {
     | '/app/study-groups'
     | '/app/'
     | '/app/ai-tutor/$threadId'
+    | '/app/ai-tutor/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -375,13 +375,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppCalendarRouteImport
       parentRoute: typeof AppRoute
     }
-    '/app/ai-tutor': {
-      id: '/app/ai-tutor'
-      path: '/ai-tutor'
-      fullPath: '/app/ai-tutor'
-      preLoaderRoute: typeof AppAiTutorRouteImport
-      parentRoute: typeof AppRoute
-    }
     '/api/chat': {
       id: '/api/chat'
       path: '/api/chat'
@@ -389,30 +382,24 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiChatRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/app/ai-tutor/': {
+      id: '/app/ai-tutor/'
+      path: '/ai-tutor'
+      fullPath: '/app/ai-tutor/'
+      preLoaderRoute: typeof AppAiTutorIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/app/ai-tutor/$threadId': {
       id: '/app/ai-tutor/$threadId'
-      path: '/$threadId'
+      path: '/ai-tutor/$threadId'
       fullPath: '/app/ai-tutor/$threadId'
       preLoaderRoute: typeof AppAiTutorThreadIdRouteImport
-      parentRoute: typeof AppAiTutorRoute
+      parentRoute: typeof AppRoute
     }
   }
 }
 
-interface AppAiTutorRouteChildren {
-  AppAiTutorThreadIdRoute: typeof AppAiTutorThreadIdRoute
-}
-
-const AppAiTutorRouteChildren: AppAiTutorRouteChildren = {
-  AppAiTutorThreadIdRoute: AppAiTutorThreadIdRoute,
-}
-
-const AppAiTutorRouteWithChildren = AppAiTutorRoute._addFileChildren(
-  AppAiTutorRouteChildren,
-)
-
 interface AppRouteChildren {
-  AppAiTutorRoute: typeof AppAiTutorRouteWithChildren
   AppCalendarRoute: typeof AppCalendarRoute
   AppFlashcardsRoute: typeof AppFlashcardsRoute
   AppLeaderboardsRoute: typeof AppLeaderboardsRoute
@@ -425,10 +412,11 @@ interface AppRouteChildren {
   AppSocialRoute: typeof AppSocialRoute
   AppStudyGroupsRoute: typeof AppStudyGroupsRoute
   AppIndexRoute: typeof AppIndexRoute
+  AppAiTutorThreadIdRoute: typeof AppAiTutorThreadIdRoute
+  AppAiTutorIndexRoute: typeof AppAiTutorIndexRoute
 }
 
 const AppRouteChildren: AppRouteChildren = {
-  AppAiTutorRoute: AppAiTutorRouteWithChildren,
   AppCalendarRoute: AppCalendarRoute,
   AppFlashcardsRoute: AppFlashcardsRoute,
   AppLeaderboardsRoute: AppLeaderboardsRoute,
@@ -441,6 +429,8 @@ const AppRouteChildren: AppRouteChildren = {
   AppSocialRoute: AppSocialRoute,
   AppStudyGroupsRoute: AppStudyGroupsRoute,
   AppIndexRoute: AppIndexRoute,
+  AppAiTutorThreadIdRoute: AppAiTutorThreadIdRoute,
+  AppAiTutorIndexRoute: AppAiTutorIndexRoute,
 }
 
 const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
@@ -455,3 +445,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
