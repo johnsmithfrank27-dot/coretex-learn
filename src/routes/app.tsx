@@ -6,6 +6,7 @@ import { TopNav } from "@/components/top-nav";
 import { useAuth } from "@/lib/auth-context";
 import { useServerFn } from "@tanstack/react-start";
 import { ensurePersonalTimetable } from "@/lib/timetable.functions";
+import { AiAssistantProvider } from "@/components/ai-assistant";
 
 export const Route = createFileRoute("/app")({
   component: AppLayout,
@@ -36,6 +37,7 @@ function AppLayout() {
   }
 
   return (
+    <AiAssistantProvider>
     <div className="min-h-screen flex bg-background">
       <AppSidebar />
       <div className="flex-1 min-w-0 flex flex-col">
@@ -45,5 +47,6 @@ function AppLayout() {
         </main>
       </div>
     </div>
+    </AiAssistantProvider>
   );
 }
