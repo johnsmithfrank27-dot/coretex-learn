@@ -30,7 +30,7 @@ export function AiAssistantProvider({ children }: { children: React.ReactNode })
 }
 
 function AiAssistantPanel() {
-  const { isOpen, close } = useAiAssistant();
+  const { isOpen, close, open } = useAiAssistant();
   const [input, setInput] = useState("");
   const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -75,7 +75,7 @@ function AiAssistantPanel() {
     <>
       {/* Floating trigger — visible on every page */}
       <button
-        onClick={() => (isOpen ? close() : (window.dispatchEvent(new CustomEvent("ai:open")), null))}
+        onClick={() => (isOpen ? close() : open())}
         className="fixed bottom-6 right-6 z-40 grid h-14 w-14 place-items-center rounded-full bg-gradient-primary text-primary-foreground shadow-elegant hover:shadow-glow transition"
         aria-label="Open Coretex AI"
       >
