@@ -27,11 +27,11 @@ export async function generateStructured<T>(opts: {
 
   if (!model) throw new Error("AI is not configured for this project yet.");
 
-  const { experimental_output } = await generateText({
+  const { output } = await generateText({
     model,
     system: opts.system,
     prompt: opts.prompt,
-    experimental_output: Output.object({ schema: opts.schema }),
+    output: Output.object({ schema: opts.schema }),
   });
-  return experimental_output as T;
+  return output as T;
 }
