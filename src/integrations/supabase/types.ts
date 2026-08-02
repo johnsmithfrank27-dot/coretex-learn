@@ -171,6 +171,7 @@ export type Database = {
           deck_type: string
           difficulty: string
           due_today: number
+          folder: string
           id: string
           is_bookmarked: boolean
           is_favorite: boolean
@@ -187,6 +188,7 @@ export type Database = {
           deck_type?: string
           difficulty?: string
           due_today?: number
+          folder?: string
           id?: string
           is_bookmarked?: boolean
           is_favorite?: boolean
@@ -203,6 +205,7 @@ export type Database = {
           deck_type?: string
           difficulty?: string
           due_today?: number
+          folder?: string
           id?: string
           is_bookmarked?: boolean
           is_favorite?: boolean
@@ -392,6 +395,7 @@ export type Database = {
           created_at: string
           folder: string
           id: string
+          is_archived: boolean
           is_favorite: boolean
           is_pinned: boolean
           is_shared: boolean
@@ -407,6 +411,7 @@ export type Database = {
           created_at?: string
           folder?: string
           id?: string
+          is_archived?: boolean
           is_favorite?: boolean
           is_pinned?: boolean
           is_shared?: boolean
@@ -422,6 +427,7 @@ export type Database = {
           created_at?: string
           folder?: string
           id?: string
+          is_archived?: boolean
           is_favorite?: boolean
           is_pinned?: boolean
           is_shared?: boolean
@@ -517,6 +523,56 @@ export type Database = {
         }
         Relationships: []
       }
+      quiz_attempts: {
+        Row: {
+          answers: Json
+          completed: boolean
+          created_at: string
+          flagged: Json
+          id: string
+          quiz_id: string
+          score: number
+          seconds_spent: number
+          total: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          answers?: Json
+          completed?: boolean
+          created_at?: string
+          flagged?: Json
+          id?: string
+          quiz_id: string
+          score?: number
+          seconds_spent?: number
+          total?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          answers?: Json
+          completed?: boolean
+          created_at?: string
+          flagged?: Json
+          id?: string
+          quiz_id?: string
+          score?: number
+          seconds_spent?: number
+          total?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "quiz_attempts_quiz_id_fkey"
+            columns: ["quiz_id"]
+            isOneToOne: false
+            referencedRelation: "quizzes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       quiz_questions: {
         Row: {
           correct_answer: string | null
@@ -606,6 +662,51 @@ export type Database = {
           updated_at?: string
           visibility?: string
           xp_reward?: number
+        }
+        Relationships: []
+      }
+      resources: {
+        Row: {
+          ai_summary: string | null
+          category: string
+          created_at: string
+          description: string | null
+          id: string
+          is_bookmarked: boolean
+          owner_id: string
+          resource_type: string
+          subject: string
+          title: string
+          updated_at: string
+          url: string | null
+        }
+        Insert: {
+          ai_summary?: string | null
+          category?: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_bookmarked?: boolean
+          owner_id: string
+          resource_type?: string
+          subject?: string
+          title: string
+          updated_at?: string
+          url?: string | null
+        }
+        Update: {
+          ai_summary?: string | null
+          category?: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_bookmarked?: boolean
+          owner_id?: string
+          resource_type?: string
+          subject?: string
+          title?: string
+          updated_at?: string
+          url?: string | null
         }
         Relationships: []
       }
